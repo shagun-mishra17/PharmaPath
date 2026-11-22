@@ -1479,20 +1479,20 @@ else:
                         f"Your PharmaPath OTP is {otp}. "
                         "It expires in 5 minutes."
                     )
+                 try:
 
-                    try:
+                 with smtplib.SMTP("smtp.gmail.com", 587, timeout=20) as server:
 
-                        with smtplib.SMTP + STARTTLS(
-                            "smtp.gmail.com",
-                            465
-                        ) as server:
+                  server.ehlo()
+                  server.starttls()
+                  server.ehlo()
 
-                            server.login(
-                                sender,
-                                app_password
-                            )
+                 server.login(
+                 sender.strip(),
+                 app_password.strip().replace(" ", "")
+                        )
 
-                            server.send_message(msg)
+                  server.send_message(msg)
 
                         st.session_state.otp_email = (
                             reset_email.lower()
