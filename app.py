@@ -1400,6 +1400,7 @@ else:
 
                         st.error(message)
 
+   
     # FORGOT PASSWORD OTP
 
     with forgot_tab:
@@ -1428,18 +1429,12 @@ else:
 
                     sender = st.secrets.get(
                         "PHARMAPATH_EMAIL",
-                        os.getenv(
-                            "PHARMAPATH_EMAIL",
-                            ""
-                        )
+                        os.getenv("PHARMAPATH_EMAIL", "")
                     )
 
                     app_password = st.secrets.get(
                         "PHARMAPATH_EMAIL_PASSWORD",
-                        os.getenv(
-                            "PHARMAPATH_EMAIL_PASSWORD",
-                            ""
-                        )
+                        os.getenv("PHARMAPATH_EMAIL_PASSWORD", "")
                     )
 
                 except Exception:
@@ -1479,23 +1474,28 @@ else:
                         f"Your PharmaPath OTP is {otp}. "
                         "It expires in 5 minutes."
                     )
+
                     try:
 
-                         with smtplib.SMTP("smtp.gmail.com", 587, timeout=20) as server:
+                        with smtplib.SMTP(
+                            "smtp.gmail.com",
+                            587,
+                            timeout=20
+                        ) as server:
 
-                          server.ehlo()
-                          server.starttls()
-                          server.ehlo()
+                            server.ehlo()
+                            server.starttls()
+                            server.ehlo()
 
-                          server.login(
-                          sender.strip(),
-                          app_password.strip().replace(" ", "")
-                                 )
+                            server.login(
+                                sender.strip(),
+                                app_password.strip().replace(" ", "")
+                            )
 
-                          server.send_message(msg)
+                            server.send_message(msg)
 
                         st.session_state.otp_email = (
-                            reset_email.lower()
+                            reset_email.lower().strip()
                         )
 
                         st.session_state.reset_otp = otp
@@ -1511,7 +1511,8 @@ else:
                     except Exception as e:
 
                         st.error(
-                            "OTP could not be sent. " + str(e)
+                            "OTP could not be sent. "
+                            + type(e).__name__ + ": " + str(e)
                         )
 
         if st.session_state.otp_email:
@@ -1583,9 +1584,15 @@ else:
                         None
                     )
 
+                    st.session_state.pop(
+                        "otp_expiry",
+                        None
+                    )
+
                     st.success(
                         "Password changed successfully. Login now."
                     )
+
 
 
 # ==================== FOOTER ====================
