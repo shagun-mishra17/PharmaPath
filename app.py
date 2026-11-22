@@ -1482,7 +1482,7 @@ else:
 
                     try:
 
-                        with smtplib.SMTP_SSL(
+                        with smtplib.SMTP + STARTTLS(
                             "smtp.gmail.com",
                             465
                         ) as server:
